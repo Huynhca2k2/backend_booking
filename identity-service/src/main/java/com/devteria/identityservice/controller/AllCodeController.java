@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+
 @RestController
 @RequestMapping("/allCodes")
 @RequiredArgsConstructor
@@ -30,5 +31,10 @@ public class AllCodeController {
     List<AllCode> getAllCode(){
         return allCodeService.getAllCode();
     }
+    @GetMapping("/type")
+    public List<AllCode> getAllcodes(@RequestParam String type) {
+        return allCodeService.getAllcodesByType(type);
+    }
+
 
 }

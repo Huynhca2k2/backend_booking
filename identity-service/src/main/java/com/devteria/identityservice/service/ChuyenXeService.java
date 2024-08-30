@@ -44,6 +44,25 @@ public class ChuyenXeService {
         ChuyenXe chuyenXe = chuyenXeMapper.toChuyenXe(request);
         return chuyenXeRepository.save(chuyenXe);
     }
+
+//    public UserResponse createUser(UserCreationRequest request) {
+//        if (userRepository.existsByUsername(request.getUsername())) throw new AppException(ErrorCode.USER_EXISTED);
+//
+//        User user = userMapper.toUser(request);
+//        user.setPassword(passwordEncoder.encode(request.getPassword()));
+//
+//        HashSet<Role> roles = new HashSet<>();
+//        roleRepository.findById(PredefinedRole.USER_ROLE).ifPresent(roles::add);
+//
+//        user.setRoles(roles);
+//
+//        return userMapper.toUserResponse(userRepository.save(user));
+//    }
+
+
+
+
+
     public List<ChuyenXe> getChuyenXe(){
         return chuyenXeRepository.findAll();
     }
@@ -97,4 +116,29 @@ public class ChuyenXeService {
 //        return chuyenXeRepository.save(chuyenXe);
 //    }
 
+
+
+
+    @Transactional
+    public ChuyenXeResponse addBusToChuyenXe(Integer chuyenXeId, Integer busId) {
+        // Tìm kiếm ChuyenXe theo ID
+        ChuyenXe chuyenXe = chuyenXeRepository.findById(chuyenXeId)
+                .orElseThrow(() -> new AppException(ErrorCode.UNCATEGORIZED_EXCEPTION));
+
+        // Tìm kiếm Bus theo ID
+        Bus bus = busRepository.findById(busId)
+                .orElseThrow(() -> new AppException(ErrorCode.UNCATEGORIZED_EXCEPTION));
+
+        // Thêm Bus vào danh sách Bus của ChuyenXe
+        chuyenXe.getBus().add(bus);
+
+        //Gán chuyenXe cho bus
+        bus.setChuyenXe(chuyenXe);
+
+        // Lưu lại ChuyenXe sau khi đã thêm Bus
+        ChuyenXe updatedChuyenXe = chuyenXeRepository.save(chuyenXe);
+
+        // Trả về phản hồi sau khi thêm thành công
+        return chuyenXeMapper.toChuyenXeResponse(updatedChuyenXe);
+    }
 }

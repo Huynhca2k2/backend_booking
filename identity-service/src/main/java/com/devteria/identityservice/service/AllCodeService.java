@@ -31,5 +31,8 @@ public class AllCodeService {
     public List<AllCode> getAllCode(){
         return allCodeRepository.findAll();
     }
+    public List<AllCode> getAllcodesByType(String type) {
+        return allCodeRepository.findByType(type);
+    }
 
 }

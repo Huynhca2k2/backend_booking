@@ -8,6 +8,7 @@ import lombok.experimental.FieldDefaults;
 
 import java.sql.Time;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -27,7 +28,7 @@ public class ChuyenXe {
     String destination;
 
 
-    @OneToMany(mappedBy = "chuyenXe")
+    @OneToMany(mappedBy = "chuyenXe",cascade = CascadeType.ALL, orphanRemoval = true)
     List<Bus> bus;
     @OneToMany(mappedBy = "chuyenXe")
     private List<BusTicket> tickets;
@@ -40,6 +41,13 @@ public class ChuyenXe {
     )
     private Set<AllCode> allCodes;
 
-
+//    public void addBus(Bus bus) {
+//        buses.add(bus);
+//        bus.setChuyenXe(this);
+//    }
+//    public void removeBus(Bus bus) {
+//        buses.remove(bus);
+//        bus.setChuyenXe(null);
+//    }
 
 }

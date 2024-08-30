@@ -19,7 +19,7 @@ public class ChuyenXeResponse {
     float distance;
     String departure;
     String destination;
-    Set<Bus> bus;
+    Set<BusResponse> bus;
     Set<BusTicket> busTickets;
 //    Set<RoleResponse> roles;
 }

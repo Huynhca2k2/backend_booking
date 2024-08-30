@@ -33,9 +33,17 @@ public class ChuyenXeController {
         return chuyenXeService.createChuyenXe(chuyenXe);
     }
 
-    @GetMapping("/getBus")
-    List<ChuyenXe> getChuyenXe(){
-        return chuyenXeService.getChuyenXe();
+
+//    @GetMapping
+//    ApiResponse<List<UserResponse>> getUsers() {
+//        return ApiResponse.<List<UserResponse>>builder()
+//                .result(userService.getUsers())
+//                .build();
+//    }
+
+    @GetMapping("/getAll")
+    ApiResponse<List<ChuyenXeResponse>> getChuyenXe(){
+        return ApiResponse.<List<ChuyenXeResponse>>builder().result(chuyenXeService.getChuyenXes()).build();
     }
 
     @GetMapping("getId/{id}")
@@ -44,18 +52,12 @@ public class ChuyenXeController {
     }
 
 
-    @PostMapping("post/{chuyenXeId}/{busId}")
-    public ChuyenXe addBusToChuyenXe(
-            @PathVariable Integer chuyenXeId, @PathVariable Integer busId) {
-
-        ChuyenXe chuyenXe = chuyenXeService.getChuyenXeById(chuyenXeId);
-
-        Bus bus = busService.getBusById(busId);
-
-        bus.setChuyenXe(chuyenXe);
-        busRepository.save(bus);
-
-        return chuyenXe;
+    @PutMapping("/{chuyenXeId}/{busId}")
+    public ResponseEntity<ChuyenXeResponse> addBusToChuyenXe(
+            @PathVariable Integer chuyenXeId,
+            @PathVariable Integer busId) {
+        ChuyenXeResponse chuyenXeResponse = chuyenXeService.addBusToChuyenXe(chuyenXeId, busId);
+        return ResponseEntity.ok(chuyenXeResponse);
     }
 
 
