@@ -1,7 +1,10 @@
 package com.devteria.identityservice.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -28,7 +31,8 @@ public class ChuyenXe {
     String destination;
 
 
-    @OneToMany(mappedBy = "chuyenXe",cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "chuyenXe",cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JsonManagedReference
     List<Bus> bus;
     @OneToMany(mappedBy = "chuyenXe")
     private List<BusTicket> tickets;
@@ -41,10 +45,10 @@ public class ChuyenXe {
     )
     private Set<AllCode> allCodes;
 
-//    public void addBus(Bus bus) {
-//        buses.add(bus);
-//        bus.setChuyenXe(this);
-//    }
+    public void addBus(Bus buses) {
+        bus.add(buses);
+        buses.setChuyenXe(this);
+    }
 //    public void removeBus(Bus bus) {
 //        buses.remove(bus);
 //        bus.setChuyenXe(null);

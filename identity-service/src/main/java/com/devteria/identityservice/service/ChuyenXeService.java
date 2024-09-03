@@ -69,7 +69,7 @@ public class ChuyenXeService {
 
 
     public List<ChuyenXeResponse> getChuyenXes() {
-        log.info("In method get Users");
+        log.info("In method get ChuyenXe");
         return chuyenXeRepository.findAll().stream().map(chuyenXeMapper::toChuyenXeResponse).toList();
     }
 
@@ -129,11 +129,14 @@ public class ChuyenXeService {
         Bus bus = busRepository.findById(busId)
                 .orElseThrow(() -> new AppException(ErrorCode.UNCATEGORIZED_EXCEPTION));
 
+        if (bus.getChuyenXe() != null) {
+            throw new AppException(ErrorCode.valueOf("Bus da dc gan"));
+        }
         // Thêm Bus vào danh sách Bus của ChuyenXe
-        chuyenXe.getBus().add(bus);
-
+//        chuyenXe.setBus((List<Bus>) bus);
+        chuyenXe.addBus(bus);
         //Gán chuyenXe cho bus
-        bus.setChuyenXe(chuyenXe);
+//        bus.setChuyenXe(chuyenXe);
 
         // Lưu lại ChuyenXe sau khi đã thêm Bus
         ChuyenXe updatedChuyenXe = chuyenXeRepository.save(chuyenXe);
