@@ -13,6 +13,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -28,6 +29,37 @@ public class ChairService {
     public Bus createBus(BusCreationRequest request){
         Bus bus = busMapper.toBus((request));
         return busRepository.save(bus);
+    }
+
+
+//    public void reserveChairs(List<Integer> chairIds) {
+//        List<Chair> chairs = chairRepository.findAllById(chairIds);
+//
+//        for (Chair chair : chairs) {
+//            if ("available".equals(chair.getStatus())) {
+//                chair.setStatus("disable");
+//            } else {
+//                throw new RuntimeException("Chair " + chair.getTenGhe() + " is not available");
+//            }
+//        }
+//        chairRepository.saveAll(chairs);
+//    }
+
+
+    public List<String> reserveChairs(List<Integer> chairIds) {
+        List<Chair> chairs = chairRepository.findAllById(chairIds);
+        List<String> reservedChairNames = new ArrayList<>();
+
+        for (Chair chair : chairs) {
+            if ("available".equals(chair.getStatus())) {
+                chair.setStatus("disable");
+                reservedChairNames.add(chair.getTenGhe());  // Thêm tên ghế vào danh sách
+            } else {
+                throw new RuntimeException("Chair " + chair.getTenGhe() + " is not available");
+            }
+        }
+        chairRepository.saveAll(chairs);
+        return reservedChairNames;
     }
     public void createChairs(int numberOfChairs, Integer busId) {
         Bus bus = busRepository.findById(busId)

@@ -31,6 +31,7 @@ public class ChuyenXe {
     String destination;
 
 
+
     @OneToMany(mappedBy = "chuyenXe",cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JsonManagedReference
     List<Bus> bus;

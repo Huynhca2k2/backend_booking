@@ -11,7 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -26,6 +28,14 @@ public class ChairController {
     public ResponseEntity<String> createChairs(@RequestParam int numberOfChairs, @RequestParam Integer busId) {
         chairService.createChairs(numberOfChairs, busId);
         return ResponseEntity.ok(numberOfChairs + " chairs created successfully and associated with Bus ID " + busId);
+    }
+
+    @PostMapping("/reserve")
+    public ResponseEntity<Map<String, List<String>>> reserveChairs(@RequestBody List<Integer> chairIds) {
+        List<String> reservedChairs = chairService.reserveChairs(chairIds);
+        Map<String, List<String>> response = new HashMap<>();
+        response.put("chairs", reservedChairs);
+        return ResponseEntity.ok(response);
     }
 
 }
