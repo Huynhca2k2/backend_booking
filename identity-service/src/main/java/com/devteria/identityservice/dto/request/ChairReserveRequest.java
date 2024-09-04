@@ -3,17 +3,14 @@ package com.devteria.identityservice.dto.request;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ChuyenXeCreationRequest {
-    int id;
-    float distance;
-    String departure;
-    String destination;
-    double price;
-    double rating;
-    String flashSale;
+public class ChairReserveRequest {
+    private List<Integer> chairIds;
+    private int chuyenXeId;
 }

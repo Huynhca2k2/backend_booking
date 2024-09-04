@@ -1,6 +1,8 @@
 package com.devteria.identityservice.entity;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import jakarta.persistence.*;
@@ -22,8 +24,14 @@ public class User {
     String username;
     String password;
     String firstName;
+    String email;
+    String phoneNumber;
     LocalDate dob;
     String lastName;
+    String status;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BusTicket> tickets = new ArrayList<>();
 
     @ManyToMany
     Set<Role> roles;

@@ -1,16 +1,15 @@
 package com.devteria.identityservice.controller;
 
 
-import com.devteria.identityservice.dto.request.BusCreationRequest;
 import com.devteria.identityservice.dto.request.BusTicketCreationRequest;
-import com.devteria.identityservice.entity.Bus;
+import com.devteria.identityservice.dto.response.BusTicketResponse;
 import com.devteria.identityservice.entity.BusTicket;
-import com.devteria.identityservice.service.BusService;
 import com.devteria.identityservice.service.BusTicketService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,9 +21,16 @@ import java.util.List;
 @Slf4j
 public class BusTicketController {
     BusTicketService busTicketService;
-    @PostMapping()
-    BusTicket createBusTicket(@RequestBody BusTicketCreationRequest request){
-        return busTicketService.createBusTicket(request);
+//    @PostMapping()
+//    BusTicket createBusTicket(@RequestBody BusTicketCreationRequest request){
+//        return busTicketService.createBusTicket(request);
+//    }
+
+
+    @PostMapping("/create")
+    public ResponseEntity<BusTicketResponse> createTicket(@RequestBody BusTicketCreationRequest request) throws Exception {
+        BusTicketResponse response = busTicketService.createTicket(request);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/getAll")

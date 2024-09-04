@@ -60,6 +60,14 @@ public class ChuyenXeController {
         return ResponseEntity.ok(chuyenXeResponse);
     }
 
+//    @PutMapping("/time/{chuyenXeId}/{thoiGianId}")
+//    public ResponseEntity<ChuyenXeResponse> addTimeToChuyenXe(
+//            @PathVariable Integer chuyenXeId,
+//            @PathVariable Integer thoiGianId) {
+//        ChuyenXeResponse chuyenXeResponse = chuyenXeService.addTimeToChuyenXe(chuyenXeId, thoiGianId);
+//        return ResponseEntity.ok(chuyenXeResponse);
+//    }
+
 
 
 

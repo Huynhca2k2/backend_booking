@@ -1,6 +1,7 @@
 package com.devteria.identityservice.controller;
 
 
+import com.devteria.identityservice.dto.response.ChuyenXeResponse;
 import com.devteria.identityservice.entity.AllCode;
 import com.devteria.identityservice.entity.ThoiGian;
 import com.devteria.identityservice.service.AllCodeService;
@@ -9,6 +10,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,6 +36,14 @@ public class ThoiGianController {
 //    public List<AllCode> getAllcodes(@RequestParam String type) {
 //        return allCodeService.getAllcodesByType(type);
 //    }
+
+    @PutMapping("/{chuyenXeId}/{thoiGianId}")
+    public ResponseEntity<ThoiGian> addTimeToChuyenXe(
+            @PathVariable Integer chuyenXeId,
+            @PathVariable Integer thoiGianId) {
+        ThoiGian thoiGian = thoiGianService.addTimeToChuyenXe(chuyenXeId, thoiGianId);
+        return ResponseEntity.ok(thoiGian);
+    }
 
 
 }

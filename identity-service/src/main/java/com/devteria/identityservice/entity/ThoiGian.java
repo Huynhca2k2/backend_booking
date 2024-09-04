@@ -1,11 +1,14 @@
 package com.devteria.identityservice.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -23,4 +26,15 @@ public class ThoiGian {
     String hourEnd;
     String dateEnd;
 
+//    @OneToMany(mappedBy = "thoiGian", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<BusTicket> tickets = new ArrayList<>();
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "thoiGian", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<ChuyenXe> chuyenXes = new ArrayList<>();
+
+    public void addChuyenXe(ChuyenXe chuyenXe) {
+        chuyenXes.add(chuyenXe);
+        chuyenXe.setThoiGian(this);
+    }
 }

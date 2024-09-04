@@ -1,7 +1,9 @@
 package com.devteria.identityservice.controller;
 
 
+import com.devteria.identityservice.dto.request.ChairReserveRequest;
 import com.devteria.identityservice.entity.AllCode;
+import com.devteria.identityservice.entity.BusTicket;
 import com.devteria.identityservice.service.AllCodeService;
 import com.devteria.identityservice.service.ChairService;
 import lombok.AccessLevel;
@@ -36,6 +38,13 @@ public class ChairController {
         Map<String, List<String>> response = new HashMap<>();
         response.put("chairs", reservedChairs);
         return ResponseEntity.ok(response);
+    }
+
+
+    @PostMapping("/reserves")
+    public ResponseEntity<List<BusTicket>> reserveChairsAndCreateTickets(@RequestBody ChairReserveRequest request) {
+        List<BusTicket> busTickets = chairService.reserveChairsAndCreateTickets(request.getChairIds(), request.getChuyenXeId());
+        return ResponseEntity.ok(busTickets);
     }
 
 }

@@ -10,4 +10,11 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class BusTicketCreationRequest {
     int id;
+    private String username;
+    private String email;
+    private String phoneNumber;
+    private int chuyenXeId;
+    private int numberOfTickets;
+    double ticketPrice;
+    String status;
 }

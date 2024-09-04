@@ -2,6 +2,7 @@ package com.devteria.identityservice.dto.response;
 
 import com.devteria.identityservice.entity.Bus;
 import com.devteria.identityservice.entity.BusTicket;
+import com.devteria.identityservice.entity.ThoiGian;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -19,7 +20,11 @@ public class ChuyenXeResponse {
     float distance;
     String departure;
     String destination;
+    double price;
+    double rating;
+    String flashSale;
+    ThoiGian thoiGian;
     List<Bus> bus;
-    Set<BusTicket> busTickets;
+    Set<BusTicket> busTicket;
 //    Set<RoleResponse> roles;
 }

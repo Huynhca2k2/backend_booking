@@ -15,6 +15,7 @@ import com.devteria.identityservice.mapper.ChuyenXeMapper;
 import com.devteria.identityservice.repository.AllCodeRepository;
 import com.devteria.identityservice.repository.BusRepository;
 import com.devteria.identityservice.repository.ChuyenXeRepository;
+import com.devteria.identityservice.repository.ThoiGianRepository;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +38,7 @@ public class ChuyenXeService {
     ChuyenXeRepository chuyenXeRepository;
     ChuyenXeMapper chuyenXeMapper;
     BusRepository busRepository;
+    ThoiGianRepository thoiGianRepository;
 
     AllCodeRepository allCodeRepository;
 
@@ -44,24 +46,6 @@ public class ChuyenXeService {
         ChuyenXe chuyenXe = chuyenXeMapper.toChuyenXe(request);
         return chuyenXeRepository.save(chuyenXe);
     }
-
-//    public UserResponse createUser(UserCreationRequest request) {
-//        if (userRepository.existsByUsername(request.getUsername())) throw new AppException(ErrorCode.USER_EXISTED);
-//
-//        User user = userMapper.toUser(request);
-//        user.setPassword(passwordEncoder.encode(request.getPassword()));
-//
-//        HashSet<Role> roles = new HashSet<>();
-//        roleRepository.findById(PredefinedRole.USER_ROLE).ifPresent(roles::add);
-//
-//        user.setRoles(roles);
-//
-//        return userMapper.toUserResponse(userRepository.save(user));
-//    }
-
-
-
-
 
     public List<ChuyenXe> getChuyenXe(){
         return chuyenXeRepository.findAll();
@@ -144,4 +128,19 @@ public class ChuyenXeService {
         // Trả về phản hồi sau khi thêm thành công
         return chuyenXeMapper.toChuyenXeResponse(updatedChuyenXe);
     }
+
+//    @Transactional
+//    public ChuyenXeResponse addTimeToChuyenXe(Integer chuyenXeId, Integer timeId) {
+//        ChuyenXe chuyenXe = chuyenXeRepository.findById(chuyenXeId)
+//                .orElseThrow(() -> new AppException(ErrorCode.UNCATEGORIZED_EXCEPTION));
+//        ThoiGian thoiGian = thoiGianRepository.findById(timeId)
+//                .orElseThrow(() -> new AppException(ErrorCode.UNCATEGORIZED_EXCEPTION));
+//        if (thoiGian.getChuyenXe() != null) {
+//            throw new AppException(ErrorCode.valueOf("Time da dc gan"));
+//        }
+//        chuyenXe.addTime(thoiGian);
+//        ChuyenXe updatedChuyenXe = chuyenXeRepository.save(chuyenXe);
+//        // Trả về phản hồi sau khi thêm thành công
+//        return chuyenXeMapper.toChuyenXeResponse(updatedChuyenXe);
+//    }
 }
