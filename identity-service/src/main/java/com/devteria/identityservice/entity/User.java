@@ -28,10 +28,10 @@ public class User {
     String phoneNumber;
     LocalDate dob;
     String lastName;
-    String status;
+    boolean enabled;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<BusTicket> tickets = new ArrayList<>();
+//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<BusTicket> tickets = new ArrayList<>();
 
     @ManyToMany
     Set<Role> roles;

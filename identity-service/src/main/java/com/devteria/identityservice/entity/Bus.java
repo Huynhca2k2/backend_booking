@@ -24,7 +24,7 @@ import java.util.Set;
 @Entity
 public class Bus {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
     String busName;
     String driverName;
@@ -52,9 +52,9 @@ public class Bus {
         chair.setBus(this);
     }
 
-    public void removeChair(Chair chair) {
-        chairs.remove(chair);
-        chair.setBus(null);
-    }
+//    public void removeChair(Chair chair) {
+//        chairs.remove(chair);
+//        chair.setBus(null);
+//    }
 
 }

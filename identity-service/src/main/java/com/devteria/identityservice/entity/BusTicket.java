@@ -18,18 +18,18 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class BusTicket {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;
-
-    double ticketPrice;
-    String status;
     String username;
     String email;
     String phoneNumber;
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    @JsonBackReference
-    private User user;
+    double ticketPrice;
+    String status;
+
+//    @ManyToOne
+//    @JoinColumn(name = "user_id")
+//    @JsonBackReference
+//    private User user;
 
     @ManyToOne
     @JoinColumn(name = "thoiGian_id")

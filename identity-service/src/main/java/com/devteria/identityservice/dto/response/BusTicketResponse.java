@@ -2,6 +2,7 @@ package com.devteria.identityservice.dto.response;
 
 import com.devteria.identityservice.entity.BusTicket;
 import com.devteria.identityservice.entity.ChuyenXe;
+import com.devteria.identityservice.entity.ThoiGian;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -14,19 +15,22 @@ import java.util.Set;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class BusTicketResponse {
-    String id;
+    int id;
     String username;
     String email;
     String phoneNumber;
     double ticketPrice;
     String status;
+    ThoiGian thoiGian;
     ChuyenXeResponse chuyenXes;
 
     public BusTicketResponse(BusTicket ticket) {
+        this.id = ticket.getId();
+        this.username = ticket.getUsername();
+        this.email = ticket.getEmail();
+        this.phoneNumber = ticket.getPhoneNumber();
         this.ticketPrice = ticket.getTicketPrice();
         this.status = ticket.getStatus();
-        this.username = ticket.getUser().getUsername();
-        this.email = ticket.getUser().getEmail();
-        this.phoneNumber = ticket.getUser().getPhoneNumber();
+        this.thoiGian = ticket.getThoiGian();
     }
 }

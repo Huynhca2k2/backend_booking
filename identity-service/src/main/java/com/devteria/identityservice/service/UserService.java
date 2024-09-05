@@ -1,8 +1,13 @@
 package com.devteria.identityservice.service;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
+import java.util.UUID;
 
+import com.devteria.identityservice.entity.ConfirmationToken;
+import com.devteria.identityservice.repository.ConfirmationTokenRepository;
+import com.devteria.identityservice.repository.VerificationTokenRepository;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -35,6 +40,9 @@ public class UserService {
     RoleRepository roleRepository;
     UserMapper userMapper;
     PasswordEncoder passwordEncoder;
+    VerificationTokenRepository verificationTokenRepository;
+
+    ConfirmationTokenRepository confirmationTokenRepository;
 
     public UserResponse createUser(UserCreationRequest request) {
         if (userRepository.existsByUsername(request.getUsername())) throw new AppException(ErrorCode.USER_EXISTED);
@@ -88,4 +96,37 @@ public class UserService {
         return userMapper.toUserResponse(
                 userRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED)));
     }
+
+
+    public String confirmToken(String token) {
+        ConfirmationToken confirmationToken = confirmationTokenRepository.findByToken(token)
+                .orElseThrow(() -> new IllegalStateException("Token not found"));
+
+        if (confirmationToken.getConfirmedAt() != null) {
+            return "Token already confirmed";
+        }
+
+        LocalDateTime expiredAt = confirmationToken.getExpiresAt();
+
+        if (expiredAt.isBefore(LocalDateTime.now())) {
+            return "Token expired";
+        }
+
+        confirmationToken.setConfirmedAt(LocalDateTime.now());
+        confirmationTokenRepository.save(confirmationToken);
+
+        User user = confirmationToken.getUser();
+        user.setEnabled(true);
+        userRepository.save(user);
+
+        return "confirmed";
+    }
+//    public String generateVerificationToken(User user) {
+//        String token = UUID.randomUUID().toString();
+//        // Lưu token với thông tin người dùng
+//        ConfirmationToken verificationToken = new ConfirmationToken(token, user);
+//        verificationTokenRepository.save(verificationToken);
+//        return token;
+//    }
+
 }

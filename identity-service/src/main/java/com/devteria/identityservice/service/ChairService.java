@@ -82,7 +82,7 @@ public class ChairService {
             Chair chair = new Chair();
             chair.setTenGhe("A" + i);
             chair.setStatus("available");
-            chair.setBus(bus);  // Gán bus_id cho ghế
+//            chair.setBus(bus);  // Gán bus_id cho ghế
             chairRepository.save(chair);
         }
     }
@@ -115,7 +115,7 @@ public class ChairService {
                 // Tạo BusTicket cho mỗi ghế được đặt
                 BusTicket busTicket = new BusTicket();
                 busTicket.setTicketPrice(ticketPrice);
-                busTicket.setChuyenXe(chuyenXe);
+//                busTicket.setChuyenXe(chuyenXe);
 
                 busTickets.add(busTicket);
             } else {

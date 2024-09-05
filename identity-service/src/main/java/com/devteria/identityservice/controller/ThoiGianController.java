@@ -2,6 +2,7 @@ package com.devteria.identityservice.controller;
 
 
 import com.devteria.identityservice.dto.response.ChuyenXeResponse;
+import com.devteria.identityservice.dto.response.ThoiGianResponse;
 import com.devteria.identityservice.entity.AllCode;
 import com.devteria.identityservice.entity.ThoiGian;
 import com.devteria.identityservice.service.AllCodeService;
@@ -29,7 +30,7 @@ public class ThoiGianController {
     }
 
     @GetMapping("/findAll")
-    List<ThoiGian> getAllTime(){
+    List<ThoiGianResponse> getAllTime(){
         return thoiGianService.getThoiGian();
     }
 //    @GetMapping("/type")

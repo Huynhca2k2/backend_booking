@@ -3,6 +3,7 @@ package com.devteria.identityservice.service;
 
 import com.devteria.identityservice.dto.request.BusTicketCreationRequest;
 import com.devteria.identityservice.dto.response.BusTicketResponse;
+import com.devteria.identityservice.dto.response.ChuyenXeResponse;
 import com.devteria.identityservice.entity.*;
 import com.devteria.identityservice.mapper.BusTicketMapper;
 import com.devteria.identityservice.repository.*;
@@ -15,6 +16,8 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -25,20 +28,26 @@ public class BusTicketService {
     BusTicketMapper busTicketMapper;
     UserRepository userRepository;
 
+    EmailService emailService;
+
     ThoiGianRepository thoiGianRepository;
     ChairRepository chairRepository;
     ChuyenXeRepository chuyenXeRepository;
 
+    VerificationTokenRepository verificationTokenRepository;
     JavaMailSender mailSender;
 
     public BusTicket createBusTicket(BusTicketCreationRequest request){
         BusTicket busTicket =  busTicketMapper.toBusTicket(request);
         return busTicketRepository.save(busTicket);
     }
-    public List<BusTicket> getBusTicket(){
-        return busTicketRepository.findAll();
+//    public List<BusTicketResponse> getBusTicket(){
+//        return busTicketRepository.findAll();
+//    }
+    public List<BusTicketResponse> getBusTicket() {
+        log.info("In method get ChuyenXe");
+        return busTicketRepository.findAll().stream().map(busTicketMapper::toBusTicketResponse).toList();
     }
-
 
 
     public BusTicket createTicketWithChairs(String userId, Integer thoiGianId, List<Integer> chairIds, BusTicket ticket) {
@@ -50,27 +59,32 @@ public class BusTicketService {
 
         List<Chair> chairs = chairRepository.findAllById(chairIds);
 
-        ticket.setUser(user);
+//        ticket.setUser(user);
         ticket.setThoiGian(thoiGian);
-        ticket.setChairs(chairs);
+//        ticket.setChairs(chairs);
 
         return busTicketRepository.save(ticket);
     }
 
     public BusTicketResponse createTicket(BusTicketCreationRequest request) throws Exception {
-
         // Tìm kiếm user theo email
-        User user = userRepository.findByEmail(request.getEmail()).orElseGet(() -> {
-            // Nếu không tìm thấy user thì gửi email xác nhận
-            sendConfirmationEmail(request.getEmail());
-            // Chờ người dùng xác nhận, sau đó tạo User mới
-            User newUser = new User();
-            newUser.setEmail(request.getEmail());
-            newUser.setUsername(request.getUsername());
-            newUser.setPhoneNumber(request.getPhoneNumber());
-            newUser.setStatus("pending");
-            return userRepository.save(newUser);
-        });
+        Optional<User> userOptional = userRepository.findByEmail(request.getEmail());
+        if (userOptional.isPresent()) {
+            throw new IllegalArgumentException("Email đã tồn tại trong hệ thống");
+        }
+        // Tạo token xác thực
+        String token = UUID.randomUUID().toString();
+        String confirmationUrl = "http://localhost:8080/identity/confirm?token=" + token;
+        emailService.sendSimpleEmail(request.getEmail(), "Xác nhận đăng ký", "Nhấn vào link để xác nhận: " + confirmationUrl);
+
+        // Lưu thông tin người dùng tạm thời với status 'inactive'
+        User newUser = new User();
+        newUser.setEmail(request.getEmail());
+        newUser.setUsername(request.getUsername());
+        newUser.setPassword("123");
+        newUser.setPhoneNumber(request.getPhoneNumber());
+        newUser.setEnabled(false);
+        userRepository.save(newUser);
 
         // Lấy chuyến xe
         ChuyenXe chuyenXe = chuyenXeRepository.findById(request.getChuyenXeId())
@@ -78,29 +92,25 @@ public class BusTicketService {
 
         // Tính giá vé
         double ticketPrice = chuyenXe.getPrice() * request.getNumberOfTickets();
+        ThoiGian thoigian = chuyenXe.getThoiGian();
 
         // Tạo ticket mới
         BusTicket busTicket = new BusTicket();
         busTicket.setTicketPrice(ticketPrice);
-        busTicket.setStatus("disable");
-        busTicket.setUser(user);
+        busTicket.setStatus("active");
+        busTicket.setEmail(newUser.getEmail());
+        busTicket.setPhoneNumber(newUser.getPhoneNumber());
+        busTicket.setUsername(newUser.getUsername());
         busTicket.setChuyenXe(chuyenXe);
+        busTicket.setThoiGian(thoigian);
 
         // Lưu ticket vào database
         busTicketRepository.save(busTicket);
 
         // Cập nhật status của User sau khi xác nhận
-        user.setStatus("active");
-        userRepository.save(user);
+        newUser.setEnabled(true);
+        userRepository.save(newUser);
 
         return new BusTicketResponse(busTicket);
-    }
-
-    private void sendConfirmationEmail(String email) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(email);
-        message.setSubject("Xác nhận email");
-        message.setText("Vui lòng xác nhận email của bạn để hoàn tất đăng ký.");
-        mailSender.send(message);
     }
 }

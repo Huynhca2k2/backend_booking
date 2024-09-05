@@ -19,15 +19,15 @@ import java.util.Set;
 @Entity
 public class ThoiGian {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
     String hourStart;
     String dateStart;
     String hourEnd;
     String dateEnd;
 
-//    @OneToMany(mappedBy = "thoiGian", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<BusTicket> tickets = new ArrayList<>();
+    @OneToMany(mappedBy = "thoiGian", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BusTicket> tickets = new ArrayList<>();
 
     @JsonManagedReference
     @OneToMany(mappedBy = "thoiGian", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)

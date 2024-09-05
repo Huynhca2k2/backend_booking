@@ -34,7 +34,7 @@ public class BusTicketController {
     }
 
     @GetMapping("/getAll")
-    List<BusTicket> getBusTicket(){
+    List<BusTicketResponse> getBusTicket(){
         return busTicketService.getBusTicket();
     }
 

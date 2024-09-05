@@ -33,9 +33,9 @@ public class ChuyenXe {
     @OneToMany(mappedBy = "chuyenXe",cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JsonManagedReference
     List<Bus> bus;
-    @OneToMany(mappedBy = "chuyenXe",cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    @JsonManagedReference
-    List<BusTicket> tickets;
+//    @OneToMany(mappedBy = "chuyenXe",cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+//    @JsonManagedReference
+//    List<BusTicket> tickets;
 
     @ManyToMany
     @JoinTable(
@@ -69,10 +69,10 @@ public class ChuyenXe {
         buses.setChuyenXe(this);
     }
 
-    public void addTicket(BusTicket ticketss) {
-        tickets.add(ticketss);
-        ticketss.setChuyenXe(this);
-    }
+//    public void addTicket(BusTicket ticketss) {
+//        tickets.add(ticketss);
+//        ticketss.setChuyenXe(this);
+//    }
 //    public void addTime(ThoiGian thoiGian) {
 //        thoiGians.add(thoiGian);
 //        thoiGian.setChuyenXe(this);

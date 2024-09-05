@@ -2,6 +2,7 @@ package com.devteria.identityservice.service;
 
 
 import com.devteria.identityservice.dto.response.ChuyenXeResponse;
+import com.devteria.identityservice.dto.response.ThoiGianResponse;
 import com.devteria.identityservice.entity.AllCode;
 import com.devteria.identityservice.entity.ChuyenXe;
 import com.devteria.identityservice.entity.ThoiGian;
@@ -34,9 +35,16 @@ public class ThoiGianService {
         ThoiGian thoiGian = thoiGianMapper.toThoiGian((request));
         return thoiGianRepository.save(thoiGian);
     }
-    public List<ThoiGian> getThoiGian(){
-        return thoiGianRepository.findAll();
+    public List<ThoiGianResponse> getThoiGian(){
+        return thoiGianRepository.findAll().stream().map(thoiGianMapper::toThoiGianResponse).toList();
+//        return thoiGianRepository.findAll();
     }
+
+
+//    public List<ChuyenXeResponse> getChuyenXes() {
+//        log.info("In method get ChuyenXe");
+//        return chuyenXeRepository.findAll().stream().map(chuyenXeMapper::toChuyenXeResponse).toList();
+//    }
 //    public List<AllCode> getAllcodesByType(String type) {
 //        return allCodeRepository.findByType(type);
 //    }
