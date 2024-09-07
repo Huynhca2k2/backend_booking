@@ -1,9 +1,8 @@
 package com.devteria.identityservice.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Max;
@@ -11,10 +10,9 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
+
 @Getter
 @Setter
 @Builder
@@ -25,36 +23,103 @@ import java.util.Set;
 public class Bus {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer id;
-    String busName;
-    String driverName;
-    String busType;
+    private int id;
 
-    @Min(value = 1)
-    @Max(value = 50)
-    Integer seat;
-    Integer availableSeats;
+    private String name;
+    private String image;
+    private String descBus;
+    private String type;
+    private double priceReal;
+    private String licensePlate;
+    private int seatCapacity;
+    private String phoneNumber;
+    private double rating;
 
-    @ManyToOne
-    @JoinColumn(name = "chuyenXe_id")
-    @JsonBackReference
-    private ChuyenXe chuyenXe;
+    @OneToMany(mappedBy = "bus")
+    private List<Seat> seats;
 
+    @ManyToMany(mappedBy = "buses")
+    @JsonIgnore
+    private List<Trip> trips;
 
-    String bienSoXe;
-
-    @JsonManagedReference
-    @OneToMany(mappedBy = "bus",cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    List<Chair> chairs = new ArrayList<>();
-
-    public void addChair(Chair chair) {
-        chairs.add(chair);
-        chair.setBus(this);
+    public int getId() {
+        return id;
     }
 
-//    public void removeChair(Chair chair) {
-//        chairs.remove(chair);
-//        chair.setBus(null);
-//    }
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public String getDescBus() {
+        return descBus;
+    }
+
+    public void setDescBus(String descBus) {
+        this.descBus = descBus;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getLicensePlate() {
+        return licensePlate;
+    }
+
+    public void setLicensePlate(String licensePlate) {
+        this.licensePlate = licensePlate;
+    }
+
+    public int getSeatCapacity() {
+        return seatCapacity;
+    }
+
+    public void setSeatCapacity(int seatCapacity) {
+        this.seatCapacity = seatCapacity;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public double getRating() {
+        return rating;
+    }
+
+    public void setRating(double rating) {
+        this.rating = rating;
+    }
+
+    public List<Seat> getSeats() {
+        return seats;
+    }
+
+    public void setSeats(List<Seat> seats) {
+        this.seats = seats;
+    }
 
 }

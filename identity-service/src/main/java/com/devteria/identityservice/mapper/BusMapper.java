@@ -16,9 +16,6 @@ import org.mapstruct.MappingTarget;
 public interface BusMapper {
 
     Bus toBus(BusCreationRequest request);
+    BusResponse toBusResponse(Bus bus);
 
-//    BusResponse toBusResponse(Bus bus);
-
-//    @Mapping(target = "roles", ignore = true)
-//    void updateUser(@MappingTarget Bus bus, UserUpdateRequest request);
 }

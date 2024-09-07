@@ -22,8 +22,12 @@ import org.springframework.web.filter.CorsFilter;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    private final String[] PUBLIC_ENDPOINTS = {
-        "/users", "/auth/token", "/auth/introspect", "/auth/logout", "/auth/refresh"
+    private final String[] PUBLIC_GET_ENDPOINTS = {
+            "/api/tickets/**", "/api/buses/**","/api/trips/**", "/api/pickup-locations/**", "/api/dropoff-locations/**", "/api/seats/**"
+    };
+
+    private final String[] PUBLIC_POST_ENDPOINTS = {
+            "/auth/token", "/auth/introspect", "/auth/logout", "/auth/refresh"
     };
 
     @Autowired
@@ -31,15 +35,22 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.authorizeHttpRequests(request -> request.requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS)
-                .permitAll()
-                .anyRequest()
-                .authenticated());
+        httpSecurity.authorizeHttpRequests(request -> request
+                .requestMatchers(HttpMethod.GET, PUBLIC_GET_ENDPOINTS).permitAll()
+                .requestMatchers(HttpMethod.POST, PUBLIC_POST_ENDPOINTS).permitAll()
+                .requestMatchers(HttpMethod.POST).authenticated()
+                .requestMatchers(HttpMethod.PUT).authenticated()
+                .requestMatchers(HttpMethod.PATCH).authenticated()
+                .requestMatchers(HttpMethod.DELETE).authenticated()
+                .anyRequest().authenticated());
 
+        // Cấu hình OAuth2 Resource Server để xác thực JWT
         httpSecurity.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtConfigurer -> jwtConfigurer
                         .decoder(customJwtDecoder)
                         .jwtAuthenticationConverter(jwtAuthenticationConverter()))
                 .authenticationEntryPoint(new JwtAuthenticationEntryPoint()));
+
+        // Tắt CSRF
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
 
         return httpSecurity.build();

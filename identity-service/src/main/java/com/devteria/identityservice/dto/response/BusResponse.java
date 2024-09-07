@@ -1,16 +1,11 @@
 package com.devteria.identityservice.dto.response;
 
 
-import com.devteria.identityservice.entity.ChuyenXe;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
+import com.devteria.identityservice.entity.Seat;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDate;
-import java.util.Set;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -19,10 +14,14 @@ import java.util.Set;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class BusResponse {
     String id;
-    String busName;
-    String driverName;
-    String busType;
-    Integer seat;
-    Integer availableSeats;
-    String bienSoXe;
+    String name;
+    String image;
+    String descBus;
+    String type;
+    double priceReal;
+    String licensePlate;
+    int seatCapacity;
+    String phoneNumber;
+    List<SeatResponse> seats;
+    double rating;
 }

@@ -3,9 +3,9 @@ package com.devteria.identityservice.service;
 
 import com.devteria.identityservice.dto.request.BusCreationRequest;
 import com.devteria.identityservice.dto.response.BusResponse;
+import com.devteria.identityservice.dto.response.TripResponse;
 import com.devteria.identityservice.entity.Bus;
-import com.devteria.identityservice.entity.Chair;
-import com.devteria.identityservice.entity.Permission;
+import com.devteria.identityservice.entity.Seat;
 import com.devteria.identityservice.mapper.BusMapper;
 import com.devteria.identityservice.repository.BusRepository;
 import lombok.AccessLevel;
@@ -28,18 +28,16 @@ public class BusService {
         Bus bus = busMapper.toBus((request));
         return busRepository.save(bus);
     }
-    public List<Bus> getBus(){
-        return busRepository.findAll();
-    }
-    public Bus getBusById(Integer busid){
-        return busRepository.findById(busid)
-                .orElseThrow(() -> new RuntimeException("Bus with ID not found"));
-    }
-    public Bus addChairToBus(Integer busId, Chair chair) {
-        Bus bus = busRepository.findById(busId)
-                .orElseThrow(() -> new RuntimeException("Bus not found"));
 
-        bus.addChair(chair);
-        return busRepository.save(bus);
+    public List<BusResponse> getBuses() {
+        log.info("In method get bus");
+        return busRepository.findAll().stream().map(busMapper::toBusResponse).toList();
     }
+
+    public BusResponse getBusById(Integer busId){
+        Bus bus = busRepository.findById(busId)
+                .orElseThrow(() -> new RuntimeException("Bus with ID not found"));
+        return busMapper.toBusResponse(bus);
+    }
+
 }

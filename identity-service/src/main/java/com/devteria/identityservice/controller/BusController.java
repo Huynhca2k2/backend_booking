@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/bus")
+@RequestMapping("/api/buses")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
@@ -28,13 +28,13 @@ public class BusController {
         return busService.createBus(request);
     }
 
-    @GetMapping("/getBus")
-    List<Bus> getBus(){
-        return busService.getBus();
+    @GetMapping()
+    List<BusResponse> getAllBus(){
+        return busService.getBuses();
     }
 
     @GetMapping("/{id}")
-    Bus getBusById(@PathVariable Integer id) {
+    BusResponse getBusById(@PathVariable Integer id) {
        return busService.getBusById(id);
     }
 

@@ -121,12 +121,6 @@ public class UserService {
 
         return "confirmed";
     }
-//    public String generateVerificationToken(User user) {
-//        String token = UUID.randomUUID().toString();
-//        // Lưu token với thông tin người dùng
-//        ConfirmationToken verificationToken = new ConfirmationToken(token, user);
-//        verificationTokenRepository.save(verificationToken);
-//        return token;
-//    }
+
 
 }
