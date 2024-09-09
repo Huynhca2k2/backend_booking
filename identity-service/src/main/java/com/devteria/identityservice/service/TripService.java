@@ -3,6 +3,7 @@ package com.devteria.identityservice.service;
 
 import com.devteria.identityservice.dto.request.TicketCreationRequest;
 import com.devteria.identityservice.dto.request.TripCreationRequest;
+import com.devteria.identityservice.dto.request.TripFilterRequest;
 import com.devteria.identityservice.dto.response.TripResponse;
 import com.devteria.identityservice.entity.*;
 import com.devteria.identityservice.exception.AppException;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -91,7 +93,7 @@ public class TripService {
             bus.setSeats(filteredSeats);
         });
 
-        return  tripMapper.toTripResponse(trip);
+        return tripMapper.toTripResponse(trip);
     }
 
     public TripResponse addBusesToTrip(Integer tripId, List<Integer> busIds) {
@@ -111,4 +113,24 @@ public class TripService {
         return tripMapper.toTripResponse(trip);
     }
 
+    public List<TripResponse> filterTrips(TripFilterRequest filterRequest) {
+        List<Trip> allTrips = tripRepository.findAll();
+
+        List<Trip> filteredTrips = allTrips.stream()
+                .filter(trip -> trip.getDepartureLocation().equalsIgnoreCase(filterRequest.getDepartureLocation()))
+                .filter(trip -> trip.getArrivalLocation().equalsIgnoreCase(filterRequest.getArrivalLocation()))
+                .filter(trip -> trip.getCreationDate().isEqual(filterRequest.getCreationDate()))
+                .collect(Collectors.toList());
+
+        filteredTrips.forEach(trip -> {
+            trip.getBuses().forEach(bus -> {
+                List<Seat> filteredSeats = seatRepository.findByTripIdAndBusId(trip.getId(), bus.getId());
+                bus.setSeats(filteredSeats);
+            });
+        });
+        
+        return filteredTrips.stream()
+                .map(tripMapper::toTripResponse)
+                .collect(Collectors.toList());
+    }
 }

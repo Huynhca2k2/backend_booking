@@ -1,10 +1,7 @@
 package com.devteria.identityservice.controller;
 
 
-import com.devteria.identityservice.dto.request.ApiResponse;
-import com.devteria.identityservice.dto.request.TicketCreationRequest;
-import com.devteria.identityservice.dto.request.TripAddBusRequest;
-import com.devteria.identityservice.dto.request.TripCreationRequest;
+import com.devteria.identityservice.dto.request.*;
 import com.devteria.identityservice.dto.response.TripResponse;
 import com.devteria.identityservice.entity.Bus;
 import com.devteria.identityservice.entity.Ticket;
@@ -43,6 +40,11 @@ public class TripController {
     @PutMapping("/{tripId}/add-buses")
     public TripResponse addBusesToTrip(@PathVariable Integer tripId, @RequestBody TripAddBusRequest request) {
         return tripService.addBusesToTrip(tripId, request.getBusIds());
+    }
+
+    @PostMapping("/filter")
+    public List<TripResponse> filterTrips(@RequestBody TripFilterRequest filterRequest) {
+        return tripService.filterTrips(filterRequest);
     }
 
 }
