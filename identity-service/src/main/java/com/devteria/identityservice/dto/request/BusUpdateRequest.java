@@ -1,26 +1,26 @@
 package com.devteria.identityservice.dto.request;
 
-import java.time.LocalDate;
-import java.util.List;
-
 import com.devteria.identityservice.validator.DobConstraint;
-
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UserUpdateRequest {
+public class BusUpdateRequest {
 
-    String firstName;
-    String lastName;
-    String email;
+    String name;
+    String image;
+    String descBus;
+    String type;
+    double priceReal;
+    String licensePlate;
+    int seatCapacity;
     String phoneNumber;
-    @DobConstraint(min = 12, message = "INVALID_DOB")
-    LocalDate dob;
-
-    List<String> roles;
+    double rating;
 }

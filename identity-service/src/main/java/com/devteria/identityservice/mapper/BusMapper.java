@@ -2,6 +2,7 @@ package com.devteria.identityservice.mapper;
 
 
 import com.devteria.identityservice.dto.request.BusCreationRequest;
+import com.devteria.identityservice.dto.request.BusUpdateRequest;
 import com.devteria.identityservice.dto.request.UserCreationRequest;
 import com.devteria.identityservice.dto.request.UserUpdateRequest;
 import com.devteria.identityservice.dto.response.BusResponse;
@@ -17,5 +18,7 @@ public interface BusMapper {
 
     Bus toBus(BusCreationRequest request);
     BusResponse toBusResponse(Bus bus);
+
+    void updateBus(@MappingTarget Bus bus, BusUpdateRequest request);
 
 }

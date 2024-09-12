@@ -1,14 +1,15 @@
 package com.devteria.identityservice.service;
 
-
 import com.devteria.identityservice.dto.request.SeatCreationMoreRequest;
 import com.devteria.identityservice.dto.request.SeatCreationRequest;
+import com.devteria.identityservice.dto.request.SeatUpdateRequest;
 import com.devteria.identityservice.dto.response.SeatResponse;
-import com.devteria.identityservice.dto.response.TripResponse;
 import com.devteria.identityservice.entity.Bus;
 import com.devteria.identityservice.entity.Seat;
 import com.devteria.identityservice.entity.SeatStatus;
 import com.devteria.identityservice.entity.Trip;
+import com.devteria.identityservice.exception.AppException;
+import com.devteria.identityservice.exception.ErrorCode;
 import com.devteria.identityservice.mapper.SeatMapper;
 import com.devteria.identityservice.repository.BusRepository;
 import com.devteria.identityservice.repository.SeatRepository;
@@ -17,6 +18,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -40,10 +42,10 @@ public class SeatService {
         Optional<Trip> tripOpt = tripRepository.findById(request.getTripId());
 
         if (busOpt.isEmpty()) {
-            throw new RuntimeException("id Bus not found");
+            throw new RuntimeException("Bus with ID " + request.getBusId() + " not found");
         }
         if (tripOpt.isEmpty()) {
-            throw new RuntimeException("id Trip not found");
+            throw new RuntimeException("Trip with ID " + request.getTripId() + " not found");
         }
 
         Bus bus = busOpt.get();
@@ -63,20 +65,36 @@ public class SeatService {
         return seatRepository.saveAll(seats);
     }
 
-    public Seat createSeat(SeatCreationRequest request){
-        Seat seat = seatMapper.toSeat((request));
+    public Seat createSeat(SeatCreationRequest request) {
+        Seat seat = seatMapper.toSeat(request);
         return seatRepository.save(seat);
     }
 
     public List<SeatResponse> getSeats() {
-        log.info("In method get seat");
-        return seatRepository.findAll().stream().map(seatMapper::toSeatResponse).toList();
+        log.info("In method get seats");
+        return seatRepository.findAll()
+                .stream()
+                .map(seatMapper::toSeatResponse)
+                .toList();
     }
 
-    public Seat getSeatById(Integer seatId){
-        return seatRepository.findById(seatId)
-                .orElseThrow(() -> new RuntimeException("seat with ID not found"));
+    public SeatResponse getSeatById(Integer seatId) {
+        Seat seat = seatRepository.findById(seatId)
+                .orElseThrow(() -> new AppException(ErrorCode.UNCATEGORIZED_EXCEPTION));
+        return seatMapper.toSeatResponse(seat);
     }
 
+    public SeatResponse updateSeat(Integer seatId, SeatUpdateRequest request) {
+        Seat seat = seatRepository.findById(seatId)
+                .orElseThrow(() -> new AppException(ErrorCode.UNCATEGORIZED_EXCEPTION));
 
+        seatMapper.updateSeat(seat, request);
+
+        return seatMapper.toSeatResponse(seatRepository.save(seat));
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    public void deleteSeat(Integer seatId) {
+        seatRepository.deleteById(seatId);
+    }
 }

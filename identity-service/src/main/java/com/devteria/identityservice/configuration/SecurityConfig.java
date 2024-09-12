@@ -27,7 +27,7 @@ public class SecurityConfig {
     };
 
     private final String[] PUBLIC_POST_ENDPOINTS = {
-            "/auth/token", "/auth/introspect", "/auth/logout", "/auth/refresh", "/api/users", "/api/trips/filter"
+            "/auth/token", "/auth/token/admin", "/auth/introspect", "/auth/logout", "/auth/refresh", "/api/users", "/api/trips/filter"
     };
 
     @Autowired

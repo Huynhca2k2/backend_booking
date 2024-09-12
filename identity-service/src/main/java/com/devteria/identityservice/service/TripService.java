@@ -1,25 +1,28 @@
 package com.devteria.identityservice.service;
 
-
-import com.devteria.identityservice.dto.request.TicketCreationRequest;
 import com.devteria.identityservice.dto.request.TripCreationRequest;
 import com.devteria.identityservice.dto.request.TripFilterRequest;
+import com.devteria.identityservice.dto.request.TripUpdateRequest;
 import com.devteria.identityservice.dto.response.TripResponse;
-import com.devteria.identityservice.entity.*;
+import com.devteria.identityservice.entity.Bus;
+import com.devteria.identityservice.entity.PickupLocation;
+import com.devteria.identityservice.entity.DropoffLocation;
+import com.devteria.identityservice.entity.Seat;
+import com.devteria.identityservice.entity.Trip;
 import com.devteria.identityservice.exception.AppException;
 import com.devteria.identityservice.exception.ErrorCode;
-import com.devteria.identityservice.mapper.TicketMapper;
 import com.devteria.identityservice.mapper.TripMapper;
-import com.devteria.identityservice.repository.*;
+import com.devteria.identityservice.repository.BusRepository;
+import com.devteria.identityservice.repository.PickupLocationRepository;
+import com.devteria.identityservice.repository.DropoffLocationRepository;
+import com.devteria.identityservice.repository.SeatRepository;
+import com.devteria.identityservice.repository.TripRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,38 +33,26 @@ import java.util.stream.Collectors;
 @Service
 public class TripService {
 
-    @Autowired
-    private TripRepository tripRepository;
-
-    @Autowired
-    private PickupLocationRepository pickupLocationRepository;
-
-    @Autowired
-    private DropoffLocationRepository dropoffLocationRepository;
-
-    @Autowired
-    private BusRepository busRepository;
-
-    @Autowired
-    private SeatRepository seatRepository;
-
-    @Autowired
-    private TripMapper tripMapper;
+    TripRepository tripRepository;
+    PickupLocationRepository pickupLocationRepository;
+    DropoffLocationRepository dropoffLocationRepository;
+    BusRepository busRepository;
+    SeatRepository seatRepository;
+    TripMapper tripMapper;
 
     public Trip createTrip(TripCreationRequest request) {
-
         List<PickupLocation> pickupLocations = pickupLocationRepository.findAllById(request.getPickupLocationIds());
         List<DropoffLocation> dropoffLocations = dropoffLocationRepository.findAllById(request.getDropoffLocationIds());
         List<Bus> buses = busRepository.findAllById(request.getBusIds());
 
         if (pickupLocations.size() != request.getPickupLocationIds().size()) {
-            throw new AppException(ErrorCode.valueOf("pickup_location_not_found"));
+            throw new AppException(ErrorCode.UNCATEGORIZED_EXCEPTION);
         }
         if (dropoffLocations.size() != request.getDropoffLocationIds().size()) {
-            throw new AppException(ErrorCode.valueOf("dropoff_location_not_found"));
+            throw new AppException(ErrorCode.UNCATEGORIZED_EXCEPTION);
         }
         if (buses.size() != request.getBusIds().size()) {
-            throw new AppException(ErrorCode.valueOf("bus_not_found"));
+            throw new AppException(ErrorCode.UNCATEGORIZED_EXCEPTION);
         }
 
         Trip trip = Trip.builder()
@@ -80,13 +71,15 @@ public class TripService {
     }
 
     public List<TripResponse> getTrips() {
-        log.info("In method get trip");
-        return tripRepository.findAll().stream().map(tripMapper::toTripResponse).toList();
+        log.info("In method get trips");
+        return tripRepository.findAll().stream()
+                .map(tripMapper::toTripResponse)
+                .collect(Collectors.toList());
     }
 
     public TripResponse getTripById(Integer tripId) {
         Trip trip = tripRepository.findById(tripId)
-                .orElseThrow(() -> new RuntimeException("Trip with id not found "));
+                .orElseThrow(() -> new AppException(ErrorCode.UNCATEGORIZED_EXCEPTION));
 
         trip.getBuses().forEach(bus -> {
             List<Seat> filteredSeats = seatRepository.findByTripIdAndBusId(tripId, bus.getId());
@@ -98,16 +91,15 @@ public class TripService {
 
     public TripResponse addBusesToTrip(Integer tripId, List<Integer> busIds) {
         Trip trip = tripRepository.findById(tripId)
-                .orElseThrow(() -> new RuntimeException("Trip with id not found"));
+                .orElseThrow(() -> new AppException(ErrorCode.UNCATEGORIZED_EXCEPTION));
 
         List<Bus> busesToAdd = busRepository.findAllById(busIds);
 
         if (busesToAdd.size() != busIds.size()) {
-            throw new AppException(ErrorCode.valueOf("bus_not_found"));
+            throw new AppException(ErrorCode.UNCATEGORIZED_EXCEPTION);
         }
 
         trip.getBuses().addAll(busesToAdd);
-
         tripRepository.save(trip);
 
         return tripMapper.toTripResponse(trip);
@@ -128,9 +120,22 @@ public class TripService {
                 bus.setSeats(filteredSeats);
             });
         });
-        
+
         return filteredTrips.stream()
                 .map(tripMapper::toTripResponse)
                 .collect(Collectors.toList());
+    }
+
+    public TripResponse updateTrip(Integer tripId, TripUpdateRequest request) {
+        Trip trip = tripRepository.findById(tripId)
+                .orElseThrow(() -> new AppException(ErrorCode.UNCATEGORIZED_EXCEPTION));
+
+        tripMapper.updateTrip(trip, request);
+        return tripMapper.toTripResponse(tripRepository.save(trip));
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    public void deleteTrip(Integer tripId) {
+        tripRepository.deleteById(tripId);
     }
 }

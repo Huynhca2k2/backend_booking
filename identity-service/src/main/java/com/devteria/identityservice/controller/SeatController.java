@@ -1,9 +1,8 @@
 package com.devteria.identityservice.controller;
 
 
-import com.devteria.identityservice.dto.request.SeatCreationMoreRequest;
-import com.devteria.identityservice.dto.request.SeatCreationRequest;
-import com.devteria.identityservice.dto.request.TicketCreationRequest;
+import com.devteria.identityservice.dto.request.*;
+import com.devteria.identityservice.dto.response.SeatResponse;
 import com.devteria.identityservice.dto.response.SeatResponse;
 import com.devteria.identityservice.entity.Seat;
 import com.devteria.identityservice.entity.Ticket;
@@ -30,7 +29,7 @@ public class SeatController {
     SeatService seatService;
 
     @PostMapping()
-    Seat createSeat(@RequestBody SeatCreationRequest request){
+    public Seat createSeat(@RequestBody SeatCreationRequest request){
         return seatService.createSeat(request);
     }
 
@@ -40,12 +39,25 @@ public class SeatController {
     }
 
     @GetMapping()
-    List<SeatResponse> getSeats(){
+    public List<SeatResponse> getSeats(){
         return seatService.getSeats();
     }
 
     @GetMapping("/{id}")
-    Seat getSeatById(@PathVariable Integer id) {
+    public SeatResponse getSeatById(@PathVariable Integer id) {
         return seatService.getSeatById(id);
+    }
+
+    @DeleteMapping("/{seatId}")
+    public ApiResponse<String> deleteSeat(@PathVariable Integer seatId) {
+        seatService.deleteSeat(seatId);
+        return ApiResponse.<String>builder().result("Seat has been deleted").build();
+    }
+
+    @PutMapping("/{seatId}")
+    public ApiResponse<SeatResponse> updateSeat(@PathVariable Integer seatId, @RequestBody SeatUpdateRequest request) {
+        return ApiResponse.<SeatResponse>builder()
+                .result(seatService.updateSeat(seatId, request))
+                .build();
     }
 }

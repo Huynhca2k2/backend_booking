@@ -1,8 +1,11 @@
 package com.devteria.identityservice.controller;
 
 
+import com.devteria.identityservice.dto.request.ApiResponse;
 import com.devteria.identityservice.dto.request.BusCreationRequest;
 import com.devteria.identityservice.dto.request.TicketCreationRequest;
+import com.devteria.identityservice.dto.request.TicketUpdateRequest;
+import com.devteria.identityservice.dto.response.TicketResponse;
 import com.devteria.identityservice.dto.response.TicketResponse;
 import com.devteria.identityservice.entity.Bus;
 import com.devteria.identityservice.entity.Ticket;
@@ -25,12 +28,12 @@ public class TicketController {
     TicketService ticketService;
 
     @PostMapping()
-    Ticket createTicket(@RequestBody TicketCreationRequest request){
+    public Ticket createTicket(@RequestBody TicketCreationRequest request){
         return ticketService.createTicket(request);
     }
 
     @GetMapping()
-    List<TicketResponse> getAllTicket(){
+    public List<TicketResponse> getAllTicket(){
         return ticketService.getAllTicket();
     }
 
@@ -38,6 +41,19 @@ public class TicketController {
     public ResponseEntity<TicketResponse> getTicketById(@PathVariable int id) {
         TicketResponse ticketResponse = ticketService.getTicketById(id);
         return ResponseEntity.ok(ticketResponse);
+    }
+
+    @DeleteMapping("/{ticketId}")
+    public ApiResponse<String> deleteTicket(@PathVariable Integer ticketId) {
+        ticketService.deleteTicket(ticketId);
+        return ApiResponse.<String>builder().result("Ticket has been deleted").build();
+    }
+
+    @PutMapping("/{ticketId}")
+    public ApiResponse<TicketResponse> updateTicket(@PathVariable Integer ticketId, @RequestBody TicketUpdateRequest request) {
+        return ApiResponse.<TicketResponse>builder()
+                .result(ticketService.updateTicket(ticketId, request))
+                .build();
     }
 
 }

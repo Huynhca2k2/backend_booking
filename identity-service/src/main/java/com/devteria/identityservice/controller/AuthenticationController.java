@@ -30,6 +30,12 @@ public class AuthenticationController {
         return ApiResponse.<AuthenticationResponse>builder().result(result).build();
     }
 
+    @PostMapping("/token/admin")
+    public ApiResponse<AuthenticationResponse> authenticateAdmin(@RequestBody AuthenticationRequest request) {
+        var result = authenticationService.authenticateAdmin(request);
+        return ApiResponse.<AuthenticationResponse>builder().result(result).build();
+    }
+
     @PostMapping("/introspect")
     ApiResponse<IntrospectResponse> authenticate(@RequestBody IntrospectRequest request)
             throws ParseException, JOSEException {

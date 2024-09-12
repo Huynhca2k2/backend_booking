@@ -16,6 +16,7 @@ public class TicketResponse {
     double price;
     double discount;
     boolean status;
+    int busSelectedId;
     UserResponse user;
     TripResponse trip;
     LocalDate creationDate;

@@ -11,34 +11,17 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class TicketCreationRequest {
-    int id;
-    private double price;
-    private double discount;
-    private boolean status;
-    private String userId;
-    private int busSelectedId;
-    private int tripId;
-    private LocalDate creationDate;
-    private int pickupLocationId;
-    private int dropoffLocationId;
-    private List<Integer> seatIds;
-
-    public int getBusSelectedId() {
-        return busSelectedId;
-    }
-
-    public void setBusSelectedId(int busSelectedId) {
-        this.busSelectedId = busSelectedId;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
+public class TicketUpdateRequest {
+    double price;
+    double discount;
+    boolean status;
+    String userId;
+    int busId;
+    int tripId;
+    LocalDate creationDate;
+    int pickupLocationId;
+    int dropoffLocationId;
+    List<Integer> seatIds;
 
     public double getPrice() {
         return price;
@@ -62,6 +45,14 @@ public class TicketCreationRequest {
 
     public void setStatus(boolean status) {
         this.status = status;
+    }
+
+    public int getBusId() {
+        return busId;
+    }
+
+    public void setBusId(int busId) {
+        this.busId = busId;
     }
 
     public String getUserId() {

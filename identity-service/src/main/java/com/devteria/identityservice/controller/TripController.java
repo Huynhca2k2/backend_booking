@@ -3,6 +3,7 @@ package com.devteria.identityservice.controller;
 
 import com.devteria.identityservice.dto.request.*;
 import com.devteria.identityservice.dto.response.TripResponse;
+import com.devteria.identityservice.dto.response.TripResponse;
 import com.devteria.identityservice.entity.Bus;
 import com.devteria.identityservice.entity.Ticket;
 import com.devteria.identityservice.entity.Trip;
@@ -45,6 +46,19 @@ public class TripController {
     @PostMapping("/filter")
     public List<TripResponse> filterTrips(@RequestBody TripFilterRequest filterRequest) {
         return tripService.filterTrips(filterRequest);
+    }
+
+    @DeleteMapping("/{tripId}")
+    public ApiResponse<String> deleteTrip(@PathVariable Integer tripId) {
+        tripService.deleteTrip(tripId);
+        return ApiResponse.<String>builder().result("Trip has been deleted").build();
+    }
+
+    @PutMapping("/{tripId}")
+    public ApiResponse<TripResponse> updateTrip(@PathVariable Integer tripId, @RequestBody TripUpdateRequest request) {
+        return ApiResponse.<TripResponse>builder()
+                .result(tripService.updateTrip(tripId, request))
+                .build();
     }
 
 }
